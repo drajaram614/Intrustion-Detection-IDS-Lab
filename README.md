@@ -1,6 +1,8 @@
 # Intrusion Detection Lab with Suricata and Wazuh Integration
- ![Main Image](images/title.png)
 
+<p align="center">
+    <img src="images/title.png" alt="Main Image" />
+</p>
 
 ## Overview
 

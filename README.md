@@ -2,17 +2,17 @@
 
 ## Overview
 
-This lab focuses on implementing **Suricata**, a high-performance network threat detection engine, alongside **Wazuh** for improved logging and monitoring. Suricata, operating as an Intrusion Detection System (IDS), scans network traffic in real-time to detect suspicious activities, while Wazuh acts as a Security Information and Event Management (SIEM) tool to analyze and visualize logs. This setup enhances the security of a network environment by integrating IDS and SIEM functionalities across multiple Virtual Machines (VMs) for comprehensive network and system monitoring.
+In this lab, I focused on implementing **Suricata**, a high-performance network threat detection engine, alongside **Wazuh** for enhanced logging and monitoring capabilities. Suricata operates as an **Intrusion Detection System (IDS)**, scanning network traffic in real-time to detect suspicious activities. On the other hand, Wazuh functions as a **Security Information and Event Management (SIEM)** tool, analyzing and visualizing logs. This setup significantly improves the security of a network environment by integrating IDS and SIEM functionalities across multiple **Virtual Machines (VMs)** for comprehensive network and system monitoring.
 
 ## Why This Lab is Important
 
-By combining IDS/IPS capabilities (Suricata) with SIEM logging and analysis (Wazuh), this lab introduces essential cybersecurity concepts like threat detection, network traffic analysis, and incident response. Understanding how to set up and configure these tools is valuable for any security professional as it builds proficiency in:
+By combining **IDS/IPS capabilities** (Suricata) with **SIEM logging and analysis** (Wazuh), this lab introduces essential cybersecurity concepts such as **threat detection**, **network traffic analysis**, and **incident response**. Understanding how to set up and configure these tools is invaluable for any security professional, as it builds proficiency in:
 
-- Detecting network anomalies and potential attacks
-- Gaining visibility into network traffic patterns
-- Correlating IDS alerts with a SIEM for actionable insights
+- **Detecting network anomalies** and potential attacks
+- **Gaining visibility into network traffic patterns**
+- **Correlating IDS alerts** with a SIEM for actionable insights
 
-This lab demonstrates how to configure and deploy IDS/IPS systems and leverage SIEM integration for holistic threat visibility, improving the security and resilience of network environments.
+This lab demonstrates how to configure and deploy IDS/IPS systems and leverage SIEM integration for **holistic threat visibility**, ultimately improving the **security** and **resilience** of network environments.
 
 ---
 

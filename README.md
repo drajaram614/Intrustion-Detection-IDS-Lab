@@ -1,128 +1,159 @@
-# Intrusion Detection Lab with Suricata and Wazuh
+# Intrusion Detection Lab with Suricata and Wazuh Integration
 
 ## Overview
 
-This lab focuses on setting up and configuring **Suricata** as an Intrusion Detection System (IDS) alongside **Wazuh** for enhanced log monitoring and threat analysis. This project integrates multiple Virtual Machines (VMs) to simulate a network environment for monitoring and analyzing network traffic, gaining valuable hands-on experience with IDS/IPS, and security monitoring.
+This lab focuses on implementing **Suricata**, a high-performance network threat detection engine, alongside **Wazuh** for improved logging and monitoring. Suricata, operating as an Intrusion Detection System (IDS), scans network traffic in real-time to detect suspicious activities, while Wazuh acts as a Security Information and Event Management (SIEM) tool to analyze and visualize logs. This setup enhances the security of a network environment by integrating IDS and SIEM functionalities across multiple Virtual Machines (VMs) for comprehensive network and system monitoring.
+
+## Why This Lab is Important
+
+By combining IDS/IPS capabilities (Suricata) with SIEM logging and analysis (Wazuh), this lab introduces essential cybersecurity concepts like threat detection, network traffic analysis, and incident response. Understanding how to set up and configure these tools is valuable for any security professional as it builds proficiency in:
+
+- Detecting network anomalies and potential attacks
+- Gaining visibility into network traffic patterns
+- Correlating IDS alerts with a SIEM for actionable insights
+
+This lab demonstrates how to configure and deploy IDS/IPS systems and leverage SIEM integration for holistic threat visibility, improving the security and resilience of network environments.
 
 ---
 
-### What is Suricata?
+## Lab Walkthrough
 
-**Suricata** is an open-source, high-performance network threat detection engine that functions as an IDS, Intrusion Prevention System (IPS), and Network Security Monitoring (NSM) tool. By analyzing real-time network traffic, Suricata detects patterns and alerts users to suspicious or malicious activity based on predefined rules. Its packet inspection capabilities span multiple protocols such as HTTP, DNS, and TLS, making it an effective tool for identifying threats such as malware and port scans.
+### 1. Setting Up Suricata
 
-### Why Suricata is Important for Cybersecurity
+**Suricata** is deployed as an IDS to monitor and detect threats by analyzing network traffic.
 
-In cybersecurity, Suricata is essential due to its ability to:
-- Detect and alert on potentially harmful traffic before it impacts systems.
-- Identify and respond to unusual or malicious network patterns.
-- Integrate with Security Information and Event Management (SIEM) solutions like Wazuh, enabling streamlined monitoring and alerting.
+- **Verify Suricata Installation**: Start by checking Suricata's status to confirm that it is active.
 
----
+    ```bash
+    sudo systemctl status suricata
+    ```
 
-## How Suricata Works as an IDS
+    ![Suricata Active Status](path/to/image.png)
 
-In an IDS setup, Suricata passively monitors network traffic, comparing it against a set of rules to detect malicious activity. Suricata’s deep packet inspection can reveal complex attack patterns and detect anomalies, and its flexibility allows for configuration as an inline IPS or a passive IDS, depending on network requirements.
+- **Confirm Suricata Configuration Files**: Navigate to `/etc/suricata` to see the Suricata configuration files, which include `suricata.yaml` (the main config file) and the rules folder.
 
----
+    ```bash
+    ls -al /etc/suricata
+    ```
 
-## Setting up Suricata
+    ![Suricata Config Files](path/to/image.png)
 
-To configure Suricata, follow these steps:
+    ```bash
+    ls -al /etc/suricata/rules
+    ```
 
-1. **Installation and Status Verification**:
-   - Install Suricata on the VM.
-   - Ensure it's running properly.
-   - **Screenshot**: Take a screenshot of the active Suricata status.
+    ![Suricata Rules Folder](path/to/image.png)
 
-2. **Suricata Directory Structure**:
-   - Navigate to `/etc/suricata`.
-   - **Screenshot**: Display the directory structure to show the `rules` folder and `suricata.yaml` file.
+- **Identify Network Interface**: Use `ifconfig` or `ip a s` to identify your network interface details (IP, subnet, etc.). This information is essential for configuring Suricata’s network settings.
 
-3. **Network Interface Configuration**:
-   - Use `ifconfig` and `ip a s` to identify the correct network interface.
-   - Edit the `suricata.yaml` file to set the IP range and interfaces.
-   - **Screenshot**: Capture interface settings and IP information.
+    ```bash
+    ifconfig
+    ```
 
-4. **Configure Address Groups and af-packet**:
-   - Configure address groups in the `suricata.yaml` file.
-   - Specify the interface in the `af-packet` section.
-   - **Screenshot**: Show the modified `suricata.yaml` with updated address groups and interface settings.
+    ![Network Interface Info](path/to/image.png)
 
-5. **Enable Community Flow ID**:
-   - Set community flow ID for event correlation.
-   - Ensure JSON format for logs, which aids in integration with Wazuh and other tools.
+    ```bash
+    ip a s
+    ```
 
-6. **Load Rules and Test Configuration**:
-   - After updating the configuration, reload Suricata and load the rules.
-   - **Screenshot**: Show the successful configuration load with updated rules.
+    ![IP Address and Range](path/to/image.png)
 
-7. **Verify Log Files**:
-   - Check the `/var/log/suricata` folder for essential logs, including `eve.json`, `fast.log`, and `stats.log`.
-   - **Screenshot**: Show the populated log directory.
+### 2. Configuring Suricata
 
-### Testing Suricata
+- **Edit the Suricata Configuration File**: Modify `suricata.yaml` to specify network ranges and address groups to match your environment.
 
-1. **Basic Network Attack Simulation**:
-   - Run a simulated attack, e.g., `curl http://testmynids.org/uid/index.html`.
-   - **Screenshot**: Capture the output in `fast.log` to verify Suricata’s detection capabilities.
+    ![Suricata Address Group Config](path/to/image.png)
 
-2. **Creating and Testing Custom Rules**:
-   - Create a custom ICMP rule:  
-     ```plaintext
-     alert icmp any any -> $HOME_NET any (msg:"ICMP Ping"; sid:1; rev:1;)
-     ```
-   - Modify the `suricata.yaml` file to allow access to custom rules.
-   - Test the custom rule by pinging the Suricata machine from another VM.
-   - **Screenshot**: Show the `fast.log` file to confirm ICMP ping detection.
+- **Specify Network Interface for Packet Capture**: Under the `af-packet` section, define the network interface Suricata should monitor.
 
----
+    ![Suricata AF-Packet Config](path/to/image.png)
 
-## Setting Up Wazuh for Enhanced Log Monitoring
+- **Enable Flow IDs for Event Correlation**: Set `community-flow-id` to enable log import in JSON format, which allows better integration with tools like Zeek and Wazuh for event correlation.
 
-**Wazuh** is a SIEM solution that centralizes logs and provides comprehensive monitoring and alerting capabilities. It enhances security visibility by aggregating Suricata logs and analyzing them for threats.
+    ![Enable Flow ID in Suricata](path/to/image.png)
 
-### Wazuh Installation and Configuration
+- **Load Configuration and Rules**: After editing, update Suricata’s configuration and load the rules.
 
-1. **Install Wazuh Server and Agents**:
-   - Complete the Wazuh server installation.
-   - Note your admin credentials:  
-     **User**: `admin`  
-     **Password**: `ZSPxXlxUhHbUkosYch.BA6R5QFQ1gQ*p`
-   - **Screenshot**: Take a screenshot of Wazuh services running.
+    ```bash
+    sudo suricata -T -c /etc/suricata/suricata.yaml
+    ```
 
-2. **Configure Suricata Integration with Wazuh**:
-   - Add the Wazuh server IP to the Suricata configuration on the VM.
-   - Validate the connection between Suricata and Wazuh.
-   - **Screenshot**: Capture Wazuh dashboard with agent status.
+    ![Config and Rules Loaded](path/to/image.png)
 
-3. **Confirm Log Ingestion**:
-   - Confirm Wazuh is ingesting `eve.json` logs from Suricata.
-   - **Screenshot**: Display Wazuh dashboard showing logs from Suricata.
+### 3. Checking Log Files
 
-4. **Log Analysis in Wazuh Dashboard**:
-   - View detailed information about ICMP ping events and other detected activities.
-   - **Screenshot**: Capture the Wazuh dashboard showing ICMP ping detection.
+- **Verify Log Output**: Suricata logs are located at `/var/log/suricata`. Check the folder to ensure logs like `eve.json`, `fast.log`, and `stats.log` are populated.
+
+    ```bash
+    ls -al /var/log/suricata
+    ```
+
+    ![Suricata Log Files](path/to/image.png)
 
 ---
 
-## Skills Gained and Benefits of the Lab
+### 4. Testing Suricata Detection Capabilities
 
-Through this lab, you will develop key skills in:
+1. **Generate Test Traffic**: Use the `curl` command to simulate a request to `testmynids.org` and check Suricata’s response in `fast.log`.
 
-1. **Network Traffic Analysis**:
-   - Learn to analyze and interpret network traffic across various protocols, enhancing your ability to spot suspicious patterns.
+    ```bash
+    curl http://testmynids.org/uid/index.html
+    sudo cat /var/log/suricata/fast.log
+    ```
 
-2. **Threat Detection and Prevention**:
-   - Gain experience in setting up detection rules and identifying threats in real-time network traffic.
+    ![Suricata Detection Test](path/to/image.png)
 
-3. **IDS/IPS Management**:
-   - Configure, monitor, and manage IDS/IPS systems in a simulated real-world setting, preparing for deployment in diverse environments.
+2. **Add Custom Rules**: Create a custom rule for ICMP pings to detect if any external VM pings your system. Add this rule in `local.rules`:
 
-4. **Security Automation and Troubleshooting**:
-   - Develop skills in automating responses to security events and troubleshooting network security issues to optimize IDS/IPS performance.
+    ```plaintext
+    alert icmp any any -> $HOME_NET any (msg:"ICMP Ping"; sid:1; rev:1;)
+    ```
+
+    Modify `suricata.yaml` to include the path to custom rules, then test with:
+
+    ```bash
+    sudo suricata -T -c /etc/suricata/suricata.yaml -v
+    ```
+
+    ![Custom Rule Testing](path/to/image.png)
+
+3. **Simulate ICMP Attack**: From a different VM, ping the IP running Suricata. Check `fast.log` to verify Suricata flagged the ICMP pings.
+
+    ```bash
+    ping [Suricata_VM_IP]
+    ```
+
+    ![Fast Log - ICMP Detection](path/to/image.png)
 
 ---
 
-## Conclusion
+### 5. Integrating with Wazuh
 
-This lab provides hands-on experience with **Suricata** and **Wazuh**, demonstrating the power of using IDS/IPS in a network security context. Integrating these tools offers robust security capabilities, ensuring proactive detection and monitoring of potential threats. By the end of this lab, you’ll have practical skills for deploying, configuring, and managing IDS/IPS systems in cybersecurity environments.
+**Wazuh** is configured to monitor logs from Suricata, acting as a centralized SIEM solution to visualize and analyze security events.
+
+1. **Install Wazuh**: Start by setting up Wazuh and confirm all services are running. 
+
+    ![Wazuh Installation](path/to/image.png)
+
+2. **Add Suricata Logs to Wazuh**: Configure the Wazuh agent on the Suricata VM to send `eve.json` logs to Wazuh. Validate that the Suricata VM IP is correctly added in the Wazuh config file.
+
+    ![Wazuh Config File](path/to/image.png)
+
+3. **Confirm Wazuh Dashboard Connectivity**: Access the Wazuh dashboard and check for the Suricata agent’s connection. You should see live logs from `eve.json`.
+
+    ![Wazuh Dashboard - Suricata Logs](path/to/image.png)
+
+4. **Visualize ICMP Ping Events**: Verify that Wazuh displays detailed information about the ICMP ping tests performed earlier, providing insights into alert severity and source.
+
+    ![Wazuh ICMP Event Details](path/to/image.png)
+
+---
+
+## Skills and Knowledge Gained
+
+- **Network Traffic Analysis**: Monitoring and analyzing network traffic, understanding protocols, and identifying anomalies.
+- **Threat Detection and Prevention**: Hands-on experience configuring rules to detect network threats.
+- **IDS/IPS Deployment**: Practical knowledge in setting up and managing IDS/IPS tools for real-world scenarios.
+- **Security Automation and Troubleshooting**: Enhanced skills in troubleshooting IDS/IPS setups, automating alerts, and integrating SIEM solutions.
+
+This lab equips you with a foundational understanding of IDS and SIEM tools, preparing you to deploy similar configurations in enterprise environments. By mastering these tools, you can ensure better network security, early threat detection, and efficient response strategies.

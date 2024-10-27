@@ -181,19 +181,33 @@ Configuring the **Wazuh agent** on the Suricata VM enables Wazuh to monitor the 
 
 3. **Validate the Wazuh Agent Connection and Installation Sources**: 
 
-After configuring Wazuh, I validated the connection between **Suricata and Wazuh** by checking the Wazuh Dashboard. This validation step confirms that the **Wazuh agent** is installed correctly and actively sending data from the Suricata VM, which is crucial for ensuring that logs are being relayed properly. 
+After configuring Wazuh, I validated the connection between **Suricata and Wazuh**. This validation step confirms that the **Wazuh agent** is installed correctly and actively sending data from the Suricata VM, which is crucial for ensuring that logs are being relayed properly. 
 
 - **Checking Wazuh Manager, Wazuh Indexer, and Wazuh Dashboard** services, ensuring they’re running. This validation provides a **clear view of system health and connectivity**.
 
 - **Viewing installation sources** in the Wazuh Dashboard to ensure the correct sources and agents are configured and actively monitored.
 
-   ![Wazuh Agent Validation](images/image31.png)
+   ![Wazuh Agent Validation](images/image17.png)
+
+   ![Wazuh Agent Validation](images/image28.png)
+
+4. **Validate Connection on Wazuh Dashboard**: 
+
+In the **Wazuh Dashboard**, I confirmed the Suricata agent’s connection and verified that logs from `eve.json` are streaming into Wazuh. This dashboard provides **real-time insights into network events** and allows for a consolidated view of any potential security threats detected by Suricata. The log entries continuously update, reflecting Suricata's detections.
+
+   ![Wazuh Dashboard - Suricata Logs](images/image19.png)
+
+   ![Wazuh Dashboard - Suricata Logs](images/image2.png)
 
 5. **Visualize ICMP Ping Events**: 
 
 To test the integration, review the Wazuh dashboard for entries related to the ICMP ping test conducted earlier. Wazuh will display detailed information about each event, including alert severity, source IP, and specific event details. This visualization is valuable for understanding network traffic patterns and identifying unusual behavior.
 
-   ![Wazuh ICMP Event Details](path/to/image.png)
+   ![Wazuh ICMP Event Details](images/image29.png)
+
+   ![Wazuh ICMP Event Details](images/image8.png)
+
+   ![Wazuh ICMP Event Details](images/image11.png)
 
 #### Benefits of Integrating Wazuh with Suricata
 

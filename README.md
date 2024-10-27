@@ -1,4 +1,6 @@
 # Intrusion Detection Lab with Suricata and Wazuh Integration
+ ![Main Image](images/title.png)
+
 
 ## Overview
 
